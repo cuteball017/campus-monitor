@@ -18,6 +18,7 @@ export function CameraView() {
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
+        await videoRef.current.play()
         setIsStreaming(true)
         setError(null)
       }
@@ -45,9 +46,15 @@ export function CameraView() {
   return (
     <div className="w-full max-w-md">
       <div className="aspect-square bg-muted rounded-xl overflow-hidden relative border border-border">
-        {isStreaming ? (
-          <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
-        ) : (
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className={`w-full h-full object-cover ${isStreaming ? "block" : "hidden"}`}
+        />
+
+        {!isStreaming && (
           <div className="w-full h-full flex flex-col items-center justify-center gap-4 p-4">
             {error ? (
               <>
@@ -62,9 +69,6 @@ export function CameraView() {
             )}
           </div>
         )}
-
-        {/* Hidden video element for when camera is off */}
-        {!isStreaming && <video ref={videoRef} className="hidden" />}
       </div>
 
       <div className="mt-4 flex justify-center">
